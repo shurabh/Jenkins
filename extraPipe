@@ -1,0 +1,11 @@
+node {
+    stage('clone the repo') {
+        sh 'git clone https://github.com/shurabh/Jenkins.git'
+    }
+    stage('List') {
+        sh 'ls -la Jenkins'
+    }
+    stage('email') {
+        sh 'echo "Test completed" | mail -s "Test " root'
+    }
+}
