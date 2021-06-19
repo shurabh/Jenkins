@@ -8,4 +8,8 @@ node {
     stage('email') {
         sh 'echo "Test completed" | mail -s "Test " root'
     }
+    stage('Disk Usage') {
+        sh 'df -hPT . | mail -s "DiskUsage " root'
+    }
+
 }
