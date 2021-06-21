@@ -1,7 +1,6 @@
 node {
     stage('ssh to cli') {
-        sh 'su - root'
-        sh 'ssh root@cli "uptime"'
+        sh 'ssh -i /root/.ssh/id_rsa root@cli "uptime"'
     }
     stage('start httpd') {
         sh 'ssh root@cli "date"'
