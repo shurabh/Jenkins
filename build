@@ -1,10 +1,9 @@
 node {
     stage('ssh to cli') {
-        sh 'sudo -i'
-  	sh 'ssh cli'
+        sh 'ssh root@cli '/sbin/httpd -k start''
     }
     stage('start httpd') {
-        sh 'service httpd start'
+        sh 'ssh root@cli 'service httpd status''
     }
     stage('') {
         sh 'curl localhost | mail -s "Test " root'
