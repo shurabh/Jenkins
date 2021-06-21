@@ -1,9 +1,9 @@
 node {
     stage('ssh to cli') {
-        sh 'ssh root@cli "uptime"'
+        sh 'ssh -o StrictHostKeyChecking=no root@cli "uptime"'
     }
     stage('start httpd') {
-        sh 'ssh root@cli "date"'
+        sh 'ssh -o StrictHostKeyChecking=no root@cli "date"'
     }
     stage('') {
         sh 'curl localhost | mail -s "Test " root'
