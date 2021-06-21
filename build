@@ -1,0 +1,16 @@
+node {
+    stage('ssh to cli') {
+        sh 'sudo -i'
+  	sh 'ssh cli'
+    }
+    stage('start httpd') {
+        sh 'service httpd start'
+    }
+    stage('') {
+        sh 'curl localhost | mail -s "Test " root'
+    }
+    stage('Disk Usage') {
+        sh 'df -hPT . | mail -s "DiskUsage " root'
+    }
+
+}
