@@ -4,7 +4,7 @@ remote.host = "cli"
 remote.allowAnyHosts = true
 
 node {
-    withCredentials([usernamePassword(credentialsId: 'sshUserAcct', passwordVariable: 'vagrant', usernameVariable: 'root')]) {
+    withCredentials([usernamePassword(passwordVariable: 'vagrant', usernameVariable: 'root')]) {
         remote.user = root
         remote.password = vagrant
 
