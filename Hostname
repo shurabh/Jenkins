@@ -1,0 +1,9 @@
+---
+- name: Print Hostname
+  hosts: all
+  remote_user: vagrant
+  gather_facts: yes
+  tasks:
+      - name: Print hostname
+        debug:
+            msg: "It's me, {{ ansible_hostname }}"
