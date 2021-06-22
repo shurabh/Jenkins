@@ -1,0 +1,11 @@
+---
+- name: to chck uptime
+  hosts: all
+  remote_user: vagrant
+  gather_facts: no
+  tasks:
+    - name: hosts up time
+      command: uptime
+      register: x
+
+    - debug: var=x.stdout_lines
