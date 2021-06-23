@@ -1,0 +1,13 @@
+---
+- name: to install a pkg
+  hosts: all
+  remote_user: vagrant
+  gather_facts: no
+  tasks:
+    - name: Install a pkg
+      yum:
+        name: zip
+        state: latest
+      register: x
+
+    - debug: var=x.stdout_lines
