@@ -1,0 +1,21 @@
+---
+- name: to install a pkg
+  hosts: cli
+  become: yes
+#  remote_user: vagrant
+  gather_facts: no
+  tasks:
+    - name: start the docker service
+      systemd: state=started name=docker
+
+    - name: check the running containers
+      shell: /bin/docker run -dit --name C4 nginx
+      register: C4_op
+    - debug: msg="{{C4_op.stdout}}"
+
+    - name: check the running containers
+      shell: /bin/docker ps 
+      register: datecmd
+
+#    - name: Print return information from the previous task
+    - debug: msg="{{datecmd.stdout}}"
