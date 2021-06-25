@@ -1,0 +1,12 @@
+---
+- hosts: webserver
+  remote_user: vagrant
+  become: true
+#  become: true
+#  vars:
+#    ansible_become_pass: vagrant
+
+  roles:
+    - apache
+    - php
+    - mysql

@@ -1,0 +1,10 @@
+---
+# tasks file for php
+# - name: Installing Apache
+#   hosts: webserver
+#   remote_user: vagrant
+#   tasks:
+    - name: Install apache
+      yum:
+        name: httpd
+        state: present

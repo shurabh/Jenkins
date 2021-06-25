@@ -1,0 +1,25 @@
+---
+# tasks file for apache
+#- name: Installing Apache
+#  hosts: webserver
+#  remote_user: vagrant
+#  become: true
+#  tasks:
+  - name: Install apache
+    yum:
+      name: httpd
+      state: present
+
+  - name: copy index file
+    copy: src=index.html dest=/var/www/html/index.html owner=apache group=apache mode=0644
+
+  - name: Check httpd service
+    service:
+      name: httpd
+      state: started
+
+#  - name: Install php
+#    yum:
+#      name: php
+#      state: present
+

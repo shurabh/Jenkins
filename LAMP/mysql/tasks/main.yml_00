@@ -1,0 +1,27 @@
+---
+# tasks file for mysql
+#- name: mysql 
+#  hosts: webserver
+#  remote_user: vagrant
+#  tasks:
+    - name: Install mariadb
+      yum:
+       name: mariadb-server
+       state: present
+
+    - name: Install Mysql-python
+      yum:
+       name: MySQL-python
+       state: present
+
+    - name: Create a db shu
+#      mysql_user: user=shu password=shu123 priv=*.*:ALL state=present
+      mysql_user: user=root password=vagrant priv=*.*:ALL state=present
+
+    - name: Create a database edu
+      mysql_db: db=shu state=present 
+#login_unix_socket=/var/lib/mysql/mysql.sock
+
+    - name: Create a Table name
+#      command: mysql -u shu -p shu123 -e ‘CREATE TABLE thenames (name varchar(3), mailid varchar(30));’ shu
+      command: mysql -u root -p vagrant -e ‘CREATE TABLE thenames (name varchar(3), mailid varchar(30));’ root

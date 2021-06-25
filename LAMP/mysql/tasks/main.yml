@@ -1,0 +1,64 @@
+---
+# tasks file for mysql
+#- name: mysql 
+#  hosts: webserver
+#  remote_user: vagrant
+#  tasks:
+    - name: Install mariadb
+      yum:
+       name: mariadb-server
+       state: present
+
+    - name: Install Mysql-python
+      yum:
+       name: MySQL-python
+       state: present
+
+    - name: Start & Enable MySQL Server to start on boot
+      service: name=mysqld state=started enabled=yes
+
+    - shell: grep 'temporary password' /var/log/mysqld.log | awk '{print $NF}';
+      register: result
+    - set_fact:
+        mysql_root_pw: "{{ result.stdout }}"
+
+    - stat: path=/root/.my.cnf
+      register: sym
+    - set_fact: mysql_root_pw="{{ masterpassword }}"
+        when: sym.stat.exists == True
+
+    - name: install .my.cnf with credentials
+      template: src=my.cnf.j2 dest=/root/.my.cnf
+            mode=0400
+      tags: my_cnf
+
+    - name: Set the root password for MySQL Database
+      command:  mysql -u root --connect-expired-password --execute="SET PASSWORD = PASSWORD('{{ masterpassword }}');"
+    
+    - set_fact:
+        mysql_root_pw: "{{ masterpassword }}"
+
+    - name: install .my.cnf with credentials
+      template: src=my.cnf.j2 dest=/root/.my.cnf
+            mode=0400
+      tags: my_cnf
+
+    - name: Create the database for website
+      mysql_db: name={{ dbname }} state=present
+
+    - name: Create the Application user for the database
+      mysql_user: name={{ dbuser }} password={{ upassword }} priv='*.*:ALL' host='%' state=present
+    
+#- name: Enable the firewall port for MySQL
+#  firewalld: port={{ mysql_port }}/tcp permanent=true state=enabled immediate=yes
+#    - name: Create a db shu
+#      mysql_user: user=shu password=shu123 priv=*.*:ALL state=present
+#      mysql_user: user=root password=vagrant priv=*.*:ALL state=present
+
+#    - name: Create a database edu
+#      mysql_db: db=shu state=present 
+#login_unix_socket=/var/lib/mysql/mysql.sock
+
+#    - name: Create a Table name
+#      command: mysql -u shu -p shu123 -e ‘CREATE TABLE thenames (name varchar(3), mailid varchar(30));’ shu
+#      command: mysql -u root -p vagrant -e ‘CREATE TABLE thenames (name varchar(3), mailid varchar(30));’ root

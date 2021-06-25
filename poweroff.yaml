@@ -1,0 +1,7 @@
+---
+- name: Poweroff all VMs
+  hosts: all
+  become: true
+  tasks: 
+   - name: poweroff
+     command: poweroff
