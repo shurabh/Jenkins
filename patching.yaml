@@ -1,0 +1,71 @@
+---
+- name: to patch the host
+  hosts: all
+  remote_user: vagrant
+  gather_facts: yes
+  tasks:
+    - name: copy shellscript to remote
+      copy:
+        src: /home/vagrant/Jenkins/SHELL/os_patch.sh
+        dest: /tmp/patch.sh
+    - name: list the shellscript    
+      command: ls -lrt /tmp/patch.sh
+      register: x
+
+    - debug: var=x.stdout_lines
+
+    - name: Current kernel 
+      command: uname -r
+      register: uname_cmd
+
+    - debug: var=uname_cmd.stdout_lines
+
+
+    - name: patch the remote host
+      shell: sh /tmp/patch.sh >> /tmp/patch.log
+
+    - name: see the output of script
+      command: tail -n 1 /tmp/patch.log
+      register: patch
+
+    - debug: var=patch.stdout_lines
+
+
+    - name: Check if a reboot is required after kernel update on Ubuntu/Debian servers
+      register: reboot_required_file
+      stat: path=/var/run/reboot-required get_md5=no
+      when: ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian'
+
+ #   - name: Reboot CentOS/RedHat systems if kernel updated
+ #     command: shutdown -r +1  "Rebooting CentOS/RedHat Servers After Kernel Patching"
+ #     async: 0
+ #     poll: 0
+ #     when: reboot_required.stdout == "reboot_needed" and (ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux')
+ #     register: reboot_started
+ #     ignore_errors: true
+
+    - name: Task 8 - Reboot Ubuntu/Debian Servers if kernel updated
+      reboot:
+        msg: "Rebooting Ubuntu/Debian Servers After Kernel Patching"
+        connect_timeout: 5
+        reboot_timeout: 300
+        pre_reboot_delay: 0
+        post_reboot_delay: 30
+        test_command: uptime
+      when: reboot_required_file.stat.exists and (ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian')
+      register: reboot_started_ubuntu
+      ignore_errors: true
+  
+    - name: Task 9 - pause for 180 secs
+      pause:
+        minutes: 3
+
+    - name: Check if hosts are up
+      command: uptime
+      register: uptime_cmd
+
+    - debug: var=uptime_cmd.stdout_lines
+
+
+#    - name: see the update log
+#      shell: tail -5 /var/log/
