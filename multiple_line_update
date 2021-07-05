@@ -1,0 +1,23 @@
+#Update multiple lines in a file via playbook
+---
+- hosts: "{{ v_hosts }}"
+  remote_user: vagrant
+  become: yes
+  become_method: sudo
+  become_user: root
+  gather_facts: no
+
+  tasks:
+   - name: update multiple lines
+     lineinfile:
+       path: /tmp/sshd_config
+       regexp: '{{item.From}}'
+       line: '{{item.To}}'
+       state: present
+     with_items:
+      - { From: '#PermitUserEnvironment no', To: 'PermitUserEnvironment no'}
+      - { From: '#Compression delayed', To: 'Compression delayed'}
+      - { From: '#ClientAliveInterval 0', To: 'ClientAliveInterval 100'}
+      - { From: '#ClientAliveCountMax 3', To: 'ClientAliveCountMax 9'}
+      - { From: '#ShowPatchLevel no', To: 'ShowPatchLevel no'}
+
