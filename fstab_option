@@ -1,0 +1,19 @@
+---
+- hosts: "{{ v_hosts }}"
+  remote_user: vagrant
+  become: yes
+  become_method: sudo
+  become_user: root
+  gather_facts: yes
+  tasks:
+    - name: Ensure fstab uses nodev
+      shell: |
+        y=`grep home /tmp/fstab | awk '$4=$4",nodev"'`
+        sed -e '/home/ s/^#*/#/' -i /tmp/fstab
+        echo $y >> /tmp/fstab
+
+    - name: see the change
+      shell: grep home /tmp/fstab
+      register: xyz
+
+    - debug: var=xyz.stdout_lines
