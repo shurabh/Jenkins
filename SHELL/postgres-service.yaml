@@ -1,0 +1,10 @@
+kind: Service
+apiVersion: v1
+metadata:
+  #name: backend-postgres
+  name: postgres
+  namespace: non-prod
+spec:
+  clusterIP: None
+  ports:
+  - port: 5432

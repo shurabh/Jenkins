@@ -1,0 +1,56 @@
+
+###### mwdb and mwdb-web containers
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mwdb
+  namespace: non-prod
+  labels:
+    role: mwdb
+spec:
+  selector:
+    matchLabels:
+      role: mwdb
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        role: mwdb
+    spec:
+      containers:
+      - name: mwdb
+        image: localhost/mwdb:latest
+        imagePullPolicy: Never
+        volumeMounts:
+          - mountPath: /app/uploads
+            name: mwdb-uploads
+        envFrom:
+        - secretRef:
+            name: mysecret
+        env:
+        - name: GET_HOSTS_FROM
+          value: dns
+        - name: REDIS_HOST
+          value: redis
+        - name: REDIS_PORT
+          value: "6379"
+        - name: POSTGRES_HOST
+          value: postgres
+        - name: POSTGRES_PORT
+          value: "5432"
+        ports:
+        - containerPort: 8080
+      - name: mwdb-web
+        image: localhost/mwdb-web:02
+        imagePullPolicy: Never
+        env:
+        - name: GET_HOSTS_FROM
+          value: dns
+        ports:
+        - containerPort: 80
+      restartPolicy: Always
+      volumes:
+        - name: mwdb-uploads
+          persistentVolumeClaim:
+            claimName: pvc-mwdb-uploads
+#######
