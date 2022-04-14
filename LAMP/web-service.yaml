@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mquery-web-service
+  namespace: mquery-prod
+spec:
+  externalTrafficPolicy: Cluster
+  ports:
+  - name: http
+    nodePort: 30111
+    port: 80
+    protocol: TCP
+    targetPort: 5000
+  selector:
+    app: mquery-web
+  sessionAffinity: None
+  type: NodePort

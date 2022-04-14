@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ursadb
+  namespace: mquery-prod
+  labels:
+    app: ursadb
+spec:
+  selector:
+    matchLabels:
+      app: ursadb
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ursadb
+    spec:
+      containers:
+      - name: ursadb
+        image: shurabh/mquery_ursadb:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 9281
+#          name: postgres
+        volumeMounts:
+          - mountPath: /mnt/samples
+            name: samples-pv
+          - mountPath: /var/lib/ursadb
+            name: mquery-index
+      restartPolicy: Always
+      volumes:
+#        - name: mquery-ursadb
+#          emptyDir: {}
+      - name: mquery-index
+        emptyDir: {}
+      - name: samples-pv
+        persistentVolumeClaim:
+          claimName: samples-pvc
+
